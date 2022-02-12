@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/7andrew7/kudos/pkg/forms"
 	"html/template"
-	"net/url"
 	"path/filepath"
 	"time"
 
@@ -10,10 +10,9 @@ import (
 )
 
 type templateData struct {
-	FormData   url.Values
-	FormErrors map[string]string
-	Snippet    *models.Snippet
-	Snippets   []*models.Snippet
+	Form     *forms.Form
+	Snippet  *models.Snippet
+	Snippets []*models.Snippet
 }
 
 // Create a humanDate function which returns a nicely formatted string
