@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"github.com/golangcollege/sessions"
 	"html/template"
+	"time"
 
 	"log"
 	"net/http"
@@ -17,6 +19,7 @@ import (
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
+	session       *sessions.Session
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
 }
@@ -24,6 +27,7 @@ type application struct {
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:qxb49@/snippetbox?parseTime=true", "MySQL data source name")
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 
 	flag.Parse()
 
@@ -43,7 +47,11 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
+
 	app := &application{errorLog: errorLog, infoLog: infoLog,
+		session:       session,
 		snippets:      &mysql.SnippetModel{db},
 		templateCache: templateCache,
 	}
